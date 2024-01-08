@@ -676,7 +676,7 @@ function M.start_uds(cmd, cmd_args, extra_spawn_params)
 		--end)
 
 		if not job.handle then
-			local err =  --[[@as string]]
+			--local err =  --[[@as string]]
 			local msg = string.format("Spawning language server with cmd: `%s` failed", job)
 			--if string.match(err, "ENOENT") then
 			--	msg = msg .. ". The language server is either not installed, missing from PATH, or not executable."
