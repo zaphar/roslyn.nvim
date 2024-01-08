@@ -578,7 +578,7 @@ function M.start_uds(cmd, cmd_args, extra_spawn_params)
 
 		dispatchers = merge_dispatchers(dispatchers)
 
-		local sysobj 
+		local sysobj
 		local write_queue = {}
 		-- no idea what the ipc arg is for, but set to false for now
 		local pipe, err_name, err_msg = uv.new_pipe(false)
@@ -595,10 +595,10 @@ function M.start_uds(cmd, cmd_args, extra_spawn_params)
 				end
 			end,
 			is_closing = function()
-				return sysobj == nil or sysobj:is_closing()
+				return sysobj == nil or sysobj.handle:is_closing()
 			end,
 			terminate = function()
-				sysobj:kill(15)
+				sysobj:shutdown(15)
 			end,
 		})
 
@@ -687,7 +687,7 @@ function M.start_uds(cmd, cmd_args, extra_spawn_params)
 			return
 		end
 
-		sysobj = sysobj_or_err
+		sysobj = job
 
 		return public_client(client)
 	end
