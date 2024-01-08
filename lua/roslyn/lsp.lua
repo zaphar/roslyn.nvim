@@ -578,7 +578,7 @@ function M.start_uds(cmd, cmd_args, extra_spawn_params)
 
 		dispatchers = merge_dispatchers(dispatchers)
 
-		local sysobj ---@type vim.SystemObj
+		local sysobj 
 		local write_queue = {}
 		-- no idea what the ipc arg is for, but set to false for now
 		local pipe, err_name, err_msg = uv.new_pipe(false)
@@ -651,7 +651,7 @@ function M.start_uds(cmd, cmd_args, extra_spawn_params)
 			detached = extra_spawn_params.detached
 		end
 
-		local ok, sysobj_or_err = pcall(vim.system, { cmd, unpack(cmd_args) }, {
+		local ok, sysobj_or_err = pcall(vim.fn.system, { cmd, unpack(cmd_args) }, {
 			stdout = stdout_handler,
 			stderr = stderr_handler,
 			cwd = extra_spawn_params.cwd,
