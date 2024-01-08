@@ -127,8 +127,8 @@ function M.spawn(cmd, target, settings, log_level, on_exit, on_attach, capabilit
 				--vim.lsp.handlers[vim.lsp.protocol.Methods.textDocument_publishDiagnostics]
 				vim.lsp.handlers["textDocument/publishDiagnostics"]
 			),
-			["textdocument/diagnostic"] = hacks.with_fixed_diagnostics_tags(
-				--vim.lsp.handlers[vim.lsp.protocol.Methods.textdocument_diagnostic]
+			["textDocument/diagnostic"] = hacks.with_fixed_diagnostics_tags(
+				--vim.lsp.handlers[vim.lsp.protocol.Methods.textDocument_diagnostic]
 				vim.lsp.handlers["textdocument/diagnostic"]
 			),
 			["client/registerCapability"] = hacks.with_filtered_watchers(
