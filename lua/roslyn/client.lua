@@ -51,9 +51,10 @@ local M = {}
 ---Creates a new Roslyn lsp server
 ---@param cmd string
 ---@param target string
+---@param log_level string
 ---@param on_attach function
 ---@param capabilities table
-function M.spawn(cmd, target, settings, on_exit, on_attach, capabilities)
+function M.spawn(cmd, target, settings, log_level, on_exit, on_attach, capabilities)
 	local data_path = vim.fn.stdpath("data") --[[@as string]]
 	local server_path = Path:new(data_path, "roslyn", "Microsoft.CodeAnalysis.LanguageServer.dll"):absolute()
 	if not vim.loop.fs_stat(server_path) then
@@ -73,7 +74,7 @@ function M.spawn(cmd, target, settings, on_exit, on_attach, capabilities)
 
 	local server_args = {
 		server_path,
-		"--logLevel=Information",
+		"--logLevel="..log_level,
 		"--extensionLogDirectory=" .. vim.fs.dirname(vim.lsp.get_log_path()),
 	}
 
