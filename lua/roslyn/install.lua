@@ -70,7 +70,7 @@ local M = {}
 function M.install(dotnet_cmd, roslyn_pkg_version)
     local server_path = Path:new(vim.fn.stdpath("data")--[[@as string]], "roslyn"):absolute()
 
-	if vim.fn.isdirectory(server_path:aboslute()) == 1 then
+	if vim.fn.isdirectory(server_path) == 1 then
 		local reinstall = false
 		vim.ui.input(
 			{ prompt = "Roslyn LSP is already installed. Do you want to reinstall it? [y/N] " },
