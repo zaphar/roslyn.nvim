@@ -673,7 +673,7 @@ function M.start_uds(cmd, cmd_args, extra_spawn_params)
 			return
 		end
 
-		sysobj = sysobj_or_err --[[@as vim.SystemObj]]
+		sysobj = sysobj_or_err
 
 		return public_client(client)
 	end
