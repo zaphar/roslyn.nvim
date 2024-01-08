@@ -602,6 +602,8 @@ function M.start_uds(cmd, cmd_args, extra_spawn_params)
 			end,
 		})
 
+        local log_path = vim.fs.dirname(vim.lsp.get_log_path())
+
 		local stdout_handler = function(_, data, _)
 			-- vim.notify("got data " .. data, vim.log.levels.INFO)
 			-- read lines until we can decode json object
@@ -617,6 +619,7 @@ function M.start_uds(cmd, cmd_args, extra_spawn_params)
 				return
 			end
 
+            local log_file = require('plenary.path'):new(vim.lsp.get_log_path(), "roslyn-lsp.log"):absolute()
 			local pipe_name = json_obj["pipeName"]
 			-- vim.notify("will try to connect to " .. pipe_name, vim.log.levels.INFO)
 			pipe:connect(pipe_name, function(err)
@@ -631,11 +634,18 @@ function M.start_uds(cmd, cmd_args, extra_spawn_params)
 				end
 				local handle_body = function(body)
 					client:handle_body(body)
+                    local fp = io.open(log_file, "a")
+                    if not fp then
+                        return
+                    end
+                    fp:write(vim.inspect(body))
+                    fp:close()
 				end
 				pipe:read_start(M.create_read_loop(handle_body, nil, function(read_err)
 					client:on_error(M.client_errors.READ_ERROR, read_err)
 				end))
 				pipe:write(write_queue)
+                -- TODO(jwall): write this to a log file as well.
 				write_queue = nil
 			end)
 		end
