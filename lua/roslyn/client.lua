@@ -122,14 +122,17 @@ function M.spawn(cmd, target, settings, on_exit, on_attach, capabilities)
 			-- })
 		end),
 		handlers = {
-			[vim.lsp.protocol.Methods.textDocument_publishDiagnostics] = hacks.with_fixed_diagnostics_tags(
-				vim.lsp.handlers[vim.lsp.protocol.Methods.textDocument_publishDiagnostics]
+			["textDocument/publishDiagnostics"] = hacks.with_fixed_diagnostics_tags(
+				--vim.lsp.handlers[vim.lsp.protocol.Methods.textDocument_publishDiagnostics]
+				vim.lsp.handlers["textDocument/publishDiagnostics"]
 			),
-			[vim.lsp.protocol.Methods.textDocument_diagnostic] = hacks.with_fixed_diagnostics_tags(
-				vim.lsp.handlers[vim.lsp.protocol.Methods.textDocument_diagnostic]
+			["textdocument/diagnostic"] = hacks.with_fixed_diagnostics_tags(
+				--vim.lsp.handlers[vim.lsp.protocol.Methods.textdocument_diagnostic]
+				vim.lsp.handlers["textdocument/diagnostic"]
 			),
-			[vim.lsp.protocol.Methods.client_registerCapability] = hacks.with_filtered_watchers(
-				vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability]
+			["client/registerCapability"] = hacks.with_filtered_watchers(
+				--vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability]
+				vim.lsp.handlers["client/registerCapability"]
 			),
 			["workspace/projectInitializationComplete"] = function()
 				vim.notify("Roslyn project initialization complete", vim.log.levels.INFO)

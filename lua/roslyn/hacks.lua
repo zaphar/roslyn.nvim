@@ -31,7 +31,7 @@ function M.wrap_rpc_client(client)
 	---@param params (table|nil): Parameters for the invoked LSP method
 	---@return boolean `true` if notification could be sent, `false` if not
 	function result.notify(method, params)
-		if method == vim.lsp.protocol.Methods.textDocument_didChange then
+		if method == "textDocument/didChange" then
 			---@cast params -nil Assert that params is not nil
 			local changes = params.contentChanges
 			for _, change in ipairs(changes) do
@@ -86,7 +86,7 @@ end
 function M.with_filtered_watchers(handler)
 	return function(err, res, ctx, config)
 		for _, reg in ipairs(res.registrations) do
-			if reg.method == vim.lsp.protocol.Methods.workspace_didChangeWatchedFiles then
+			if reg.method == "workspace/didChangeWatchedFiles" then
 				reg.registerOptions.watchers = vim.tbl_filter(function(watcher)
 					if type(watcher.globPattern) == "table" then
 						local base_uri = nil ---@type string?
