@@ -100,7 +100,7 @@ function M.install(dotnet_cmd, roslyn_pkg_version)
 	vim.fn.writefile(nuget, Path:new(download_path, "NuGet.config"):absolute())
 
     local job = require('plenary.job');
-	local waited = job:new({
+	local result, code = job:new({
         command = dotnet_cmd,
 		args = {
 		    "restore",
@@ -110,9 +110,9 @@ function M.install(dotnet_cmd, roslyn_pkg_version)
         }
 	}):sync(60*30*1000)
 
-	if waited and waited.code ~= 0 then
+	if code ~= 0 then
 		vim.notify(
-			"Failed to restore Roslyn package: " .. vim.inspect(waited),
+			"Failed to restore Roslyn package. code:  " .. code .. " result: "  .. vim.inspect(result),
 			vim.log.levels.ERROR,
 			{ title = "Roslyn" }
 		)
