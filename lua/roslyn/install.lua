@@ -108,7 +108,7 @@ function M.install(dotnet_cmd, roslyn_pkg_version)
 		    "/p:PackageName=" .. roslyn_pkg_name,
 		    "/p:PackageVersion=" .. roslyn_pkg_version,
         }
-	}):wait()
+	}):sync()
 
 	if waited and waited.code ~= 0 then
 		vim.notify(
