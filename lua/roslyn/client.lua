@@ -123,20 +123,21 @@ function M.spawn(cmd, target, settings, log_level, on_exit, on_attach, capabilit
 			-- })
 		end),
 		handlers = {
-			["textDocument/publishDiagnostics"] = hacks.with_fixed_diagnostics_tags(
-				--vim.lsp.handlers[vim.lsp.protocol.Methods.textDocument_publishDiagnostics]
-                function(err, res, ctx, config)
-                    vim.notify("Handling publishDiagnostics message.", vim.log.levels.ERROR)
-				    vim.lsp.handlers["textDocument/publishDiagnostics"](err, res, ctx, config)
-                end
-			),
-			["textDocument/diagnostic"] = hacks.with_fixed_diagnostics_tags(
-				--vim.lsp.handlers[vim.lsp.protocol.Methods.textDocument_diagnostic]
-                function(err, res, ctx, config)
-                    vim.notify("Handling diagnostics message.", vim.log.levels.ERROR)
-				    vim.lsp.handlers["textDocument/diagnostic"](err, res, ctx, config)
-                end
-			),
+			--["textDocument/publishDiagnostics"] = hacks.with_fixed_diagnostics_tags(
+			--	--vim.lsp.handlers[vim.lsp.protocol.Methods.textDocument_publishDiagnostics]
+            --    function(err, res, ctx, config)
+            --        vim.notify("Handling publishDiagnostics message. " .. vim.inspect(ctx))
+			--	    vim.lsp.handlers["textDocument/publishDiagnostics"](err, res, ctx, config)
+            --    end
+			--),
+			--["textDocument/diagnostic"] = hacks.with_fixed_diagnostics_tags(
+			--	--vim.lsp.handlers[vim.lsp.protocol.Methods.textDocument_diagnostic]
+            --    ---@diagnostic disable-next-line: unused-local
+            --    function(err, res, ctx, config)
+            --        vim.notify("Handling diagnostics message. " .. vim.inspect(ctx))
+			--	    --vim.lsp.handlers["workspace/publishDiagnostics"](err, res, ctx, config)
+            --    end
+			--),
 			["client/registerCapability"] = hacks.with_filtered_watchers(
 				--vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability]
 				vim.lsp.handlers["client/registerCapability"]
