@@ -68,9 +68,9 @@ end
 local M = {}
 
 function M.install(dotnet_cmd, roslyn_pkg_version)
-    local server_path = Path:new(vim.fn.stdpath("data")--[[@as string]], "roslyn").absolute()
+    local server_path = Path:new(vim.fn.stdpath("data")--[[@as string]], "roslyn"):absolute()
 
-	if vim.fn.isdirectory(server_path) == 1 then
+	if vim.fn.isdirectory(server_path:aboslute()) == 1 then
 		local reinstall = false
 		vim.ui.input(
 			{ prompt = "Roslyn LSP is already installed. Do you want to reinstall it? [y/N] " },
@@ -96,8 +96,8 @@ function M.install(dotnet_cmd, roslyn_pkg_version)
 	end
 	local roslyn_pkg_name = "microsoft.codeanalysis.languageserver." .. rid
 
-	vim.fn.writefile(csproj, Path:new(download_path, "ServerDownload.csproj").absolute())
-	vim.fn.writefile(nuget, Path:new(download_path, "NuGet.config").absolute())
+	vim.fn.writefile(csproj, Path:new(download_path, "ServerDownload.csproj"):absolute())
+	vim.fn.writefile(nuget, Path:new(download_path, "NuGet.config"):absolute())
 
 	local waited = vim.system({
 		dotnet_cmd,
@@ -117,7 +117,7 @@ function M.install(dotnet_cmd, roslyn_pkg_version)
 	end
 
 	vim.fn.rename(
-		Path:new(download_path, "out", roslyn_pkg_name, roslyn_pkg_version, "content", "LanguageServer", rid).absolute(),
+		Path:new(download_path, "out", roslyn_pkg_name, roslyn_pkg_version, "content", "LanguageServer", rid):absolute(),
 		server_path
 	)
 
