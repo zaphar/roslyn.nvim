@@ -125,11 +125,17 @@ function M.spawn(cmd, target, settings, log_level, on_exit, on_attach, capabilit
 		handlers = {
 			["textDocument/publishDiagnostics"] = hacks.with_fixed_diagnostics_tags(
 				--vim.lsp.handlers[vim.lsp.protocol.Methods.textDocument_publishDiagnostics]
-				vim.lsp.handlers["textDocument/publishDiagnostics"]
+                function(err, res, ctx, config)
+                    vim.notify("Handling publishDiagnostics message.", vim.log.levels.ERROR)
+				    vim.lsp.handlers["textDocument/publishDiagnostics"](err, res, ctx, config)
+                end
 			),
 			["textDocument/diagnostic"] = hacks.with_fixed_diagnostics_tags(
 				--vim.lsp.handlers[vim.lsp.protocol.Methods.textDocument_diagnostic]
-				vim.lsp.handlers["textdocument/diagnostic"]
+                function(err, res, ctx, config)
+                    vim.notify("Handling diagnostics message.", vim.log.levels.ERROR)
+				    vim.lsp.handlers["textDocument/diagnostic"](err, res, ctx, config)
+                end
 			),
 			["client/registerCapability"] = hacks.with_filtered_watchers(
 				--vim.lsp.handlers[vim.lsp.protocol.Methods.client_registerCapability]
