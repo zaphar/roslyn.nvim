@@ -1,4 +1,4 @@
-local uv = vim.uv
+local uv = vim.loop
 local log = require("vim.lsp.log")
 local protocol = require("vim.lsp.protocol")
 local validate, schedule, schedule_wrap = vim.validate, vim.schedule, vim.schedule_wrap

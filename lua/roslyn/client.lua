@@ -1,5 +1,6 @@
 local roslyn_lsp_rpc = require("roslyn.lsp")
 local hacks = require("roslyn.hacks")
+local Path = require('plenary.path');
 
 ---@class RoslynClient
 ---@field id number?
@@ -54,8 +55,8 @@ local M = {}
 ---@param capabilities table
 function M.spawn(cmd, target, settings, on_exit, on_attach, capabilities)
 	local data_path = vim.fn.stdpath("data") --[[@as string]]
-	local server_path = vim.fs.joinpath(data_path, "roslyn", "Microsoft.CodeAnalysis.LanguageServer.dll")
-	if not vim.uv.fs_stat(server_path) then
+	local server_path = Path:new(data_path, "roslyn", "Microsoft.CodeAnalysis.LanguageServer.dll").absolute()
+	if not vim.loop.fs_stat(server_path) then
 		vim.notify_once(
 			"Roslyn LSP server not installed. Run CSInstallRoslyn to install.",
 			vim.log.levels.ERROR,
