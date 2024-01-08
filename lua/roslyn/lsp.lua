@@ -602,7 +602,7 @@ function M.start_uds(cmd, cmd_args, extra_spawn_params)
 			end,
 		})
 
-		local stdout_handler = function(_, data)
+		local stdout_handler = function(_, data, _)
 			-- vim.notify("got data " .. data, vim.log.levels.INFO)
 			-- read lines until we can decode json object
 			if not data then
@@ -640,7 +640,7 @@ function M.start_uds(cmd, cmd_args, extra_spawn_params)
 			end)
 		end
 
-		local stderr_handler = function(_, chunk)
+		local stderr_handler = function(_, chunk, _)
 			if chunk and log.error() then
 				log.error("rpc", cmd, "stderr", chunk)
 			end
@@ -651,24 +651,38 @@ function M.start_uds(cmd, cmd_args, extra_spawn_params)
 			detached = extra_spawn_params.detached
 		end
 
-		local ok, sysobj_or_err = pcall(vim.fn.system, { cmd, unpack(cmd_args) }, {
-			stdout = stdout_handler,
-			stderr = stderr_handler,
+        local job = require('plenary.job'):new({
+            command = cmd,
+            args = cmd_args,
+            on_stdout = stdout_handler,
+            on_stderr = stderr_handler,
 			cwd = extra_spawn_params.cwd,
 			env = extra_spawn_params.env,
-			detach = detached,
-		}, function(obj)
-			dispatchers.on_exit(obj.code, obj.signal)
-		end)
+            detached = detached,
+            on_exit = function(obj)
+		    	dispatchers.on_exit(obj.code, obj.signal)
+		    end
+        })
+        job:start()
+        -- TODO(jwall): Make this use plenary
+		--local ok, sysobj_or_err = pcall(vim.fn.system, { cmd, unpack(cmd_args) }, {
+		--	stdout = stdout_handler,
+		--	stderr = stderr_handler,
+		--	cwd = extra_spawn_params.cwd,
+		--	env = extra_spawn_params.env,
+		--	detach = detached,
+		--}, function(obj)
+		--	dispatchers.on_exit(obj.code, obj.signal)
+		--end)
 
-		if not ok then
-			local err = sysobj_or_err --[[@as string]]
-			local msg = string.format("Spawning language server with cmd: `%s` failed", cmd)
-			if string.match(err, "ENOENT") then
-				msg = msg .. ". The language server is either not installed, missing from PATH, or not executable."
-			else
-				msg = msg .. string.format(" with error message: %s", err)
-			end
+		if not job.handle then
+			local err =  --[[@as string]]
+			local msg = string.format("Spawning language server with cmd: `%s` failed", job)
+			--if string.match(err, "ENOENT") then
+			--	msg = msg .. ". The language server is either not installed, missing from PATH, or not executable."
+			--else
+			--	msg = msg .. string.format(" with error message: %s", err)
+			--end
 			vim.notify(msg, vim.log.levels.WARN)
 			return
 		end
