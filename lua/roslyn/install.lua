@@ -11,13 +11,14 @@ local nuget = {
 	[[</configuration>]],
 }
 
-local csproj = {
+local function build_csproj(sdk_framework)
+    local lines = {
 	[[<Project Sdk="Microsoft.Build.NoTargets/1.0.80">]],
 	[[    <PropertyGroup>]],
 	-- Changes the global packages folder
 	[[        <RestorePackagesPath>out</RestorePackagesPath>]],
 	-- This is not super relevant, as long as your SDK version supports it.
-	[[        <TargetFramework>net7.0</TargetFramework>]],
+	"        <TargetFramework>" .. sdk_framework .. "</TargetFramework>",
 	-- If a package is resolved to a fallback folder, it may not be downloaded
 	[[        <DisableImplicitNuGetFallbackFolder>true</DisableImplicitNuGetFallbackFolder>]],
 	-- We don't want to build this project, so we do not need the reference assemblies for the framework we chose
@@ -27,7 +28,9 @@ local csproj = {
 	[[        <PackageDownload Include="$(PackageName)" version="[$(PackageVersion)]" />]],
 	[[    </ItemGroup>]],
 	[[</Project>]],
-}
+    }
+    return lines
+end
 
 local function get_rid()
 	local system_info = vim.uv.os_uname()
@@ -65,7 +68,7 @@ end
 
 local M = {}
 
-function M.install(dotnet_cmd, roslyn_pkg_version)
+function M.install(dotnet_cmd, roslyn_pkg_version, sdk_framework)
 	local server_path = vim.fs.joinpath(vim.fn.stdpath("data")--[[@as string]], "roslyn")
 
 	if vim.fn.isdirectory(server_path) == 1 then
@@ -94,9 +97,11 @@ function M.install(dotnet_cmd, roslyn_pkg_version)
 	end
 	local roslyn_pkg_name = "microsoft.codeanalysis.languageserver." .. rid
 
+    local csproj = build_csproj(sdk_framework)
 	vim.fn.writefile(csproj, vim.fs.joinpath(download_path, "ServerDownload.csproj"))
 	vim.fn.writefile(nuget, vim.fs.joinpath(download_path, "NuGet.config"))
 
+    vim.notify("temp csinstall path: " .. download_path)
 	local waited = vim.system({
 		dotnet_cmd,
 		"restore",

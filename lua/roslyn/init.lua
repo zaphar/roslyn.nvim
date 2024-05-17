@@ -51,6 +51,7 @@ local M = {}
 M.server_config = {
 	dotnet_cmd = "dotnet",
 	roslyn_version = "4.9.0-3.23604.10",
+    sdk_framework = ".net7.0",
 	capabilities = nil,
 	on_attach = nil,
 	settings = nil,
@@ -150,7 +151,8 @@ end
 
 function M.setup_cmds()
 	vim.api.nvim_create_user_command("CSInstallRoslyn", function()
-		require("roslyn.install").install(M.server_config.dotnet_cmd, M.server_config.roslyn_version)
+		require("roslyn.install").install(
+            M.server_config.dotnet_cmd, M.server_config.roslyn_version, M.server_config.sdk_framework)
 	end, { desc = "Installs the roslyn server" })
 end
 
