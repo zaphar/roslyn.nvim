@@ -89,6 +89,7 @@ function M.install(dotnet_cmd, roslyn_pkg_version, sdk_framework)
 	end
 
 	local download_path = vim.fn.tempname()
+    vim.notify("temp csinstall path: " .. download_path)
 	vim.fn.mkdir(download_path, "p")
 
 	local rid = get_rid()
@@ -97,11 +98,11 @@ function M.install(dotnet_cmd, roslyn_pkg_version, sdk_framework)
 	end
 	local roslyn_pkg_name = "microsoft.codeanalysis.languageserver." .. rid
 
+    vim.notify("using sdk framework: " .. sdk_framework);
     local csproj = build_csproj(sdk_framework)
 	vim.fn.writefile(csproj, vim.fs.joinpath(download_path, "ServerDownload.csproj"))
 	vim.fn.writefile(nuget, vim.fs.joinpath(download_path, "NuGet.config"))
 
-    vim.notify("temp csinstall path: " .. download_path)
 	local waited = vim.system({
 		dotnet_cmd,
 		"restore",
